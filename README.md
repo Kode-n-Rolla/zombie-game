@@ -113,7 +113,7 @@ Coverage functional plus security tests:
 
 ![coverage-functional-plus-security-tests.png](assets/coverage-functional-plus-security-tests.png)
 
-Despite a no delta, the second version significantly increases confidence.
+Even with little or no coverage delta, the second version significantly increases confidence.
 
 ---
 
