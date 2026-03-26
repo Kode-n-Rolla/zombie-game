@@ -104,11 +104,11 @@ The percentage increase may be small.
 The **risk reduction is not**.
 
 ### Coverage Comparison
-Coverage functional tests
-![coverage-functional-plus-security-tests.png](assets/coverage-functional-plus-security-tests.png)
-
-Coverage functional plus security tests
+Coverage functional tests:
 ![coverage-functional-tests.png](assets/coverage-functional-tests.png)
+
+Coverage functional plus security tests:
+![coverage-functional-plus-security-tests.png](assets/coverage-functional-plus-security-tests.png)
 
 Despite a small delta, the second version significantly increases confidence.
 
