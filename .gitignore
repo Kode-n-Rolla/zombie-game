@@ -14,10 +14,6 @@ docs/
 .env
 
 #Others
-AGENTS.md
-Prompts.md
-wake.toml
 .vscode/
-.wake/
 .github/
 script/
