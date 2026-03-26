@@ -1,5 +1,9 @@
 ![Zombie-logo](assets/zombie.png)
 # Zombie Game
+![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?logo=solidity)
+![Foundry](https://img.shields.io/badge/Built%20with-Foundry-orange)
+![Security](https://img.shields.io/badge/Focus-Security%20Testing-red)
+![Status](https://img.shields.io/badge/Status-MVP-lightgrey)
 
 This repository is a compact `Solidity/Foundry` rebuild inspired by the original [CryptoZombies.io](https://cryptozombies.io/) idea.
 
@@ -114,6 +118,27 @@ Coverage functional plus security tests:
 ![coverage-functional-plus-security-tests.png](assets/coverage-functional-plus-security-tests.png)
 
 Even with little or no coverage delta, the second version significantly increases confidence.
+
+---
+
+## Why This Matters for Real Protocols
+
+In real-world protocols, most critical vulnerabilities do not appear in happy-path flows.
+
+They emerge from:
+- edge-case state transitions  
+- unexpected call sequences  
+- callback-based execution (e.g., token hooks, safeMint)  
+- assumptions that only hold under normal usage  
+
+A contract can pass all functional tests and still be vulnerable.
+
+This repository demonstrates how:
+- adversarial thinking changes test design  
+- small surfaces (like `_safeMint`) can introduce real risk  
+- coverage metrics can create a false sense of security  
+
+The goal is not to build a perfect system, but to show how to **test like an attacker, not like a user**.
 
 ---
 
