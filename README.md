@@ -1,3 +1,4 @@
+![Zombie-logo](assets/zombie.png)
 # Zombie Game
 
 This repository is a compact `Solidity/Foundry` rebuild inspired by the original [CryptoZombies.io](https://cryptozombies.io/) idea.
