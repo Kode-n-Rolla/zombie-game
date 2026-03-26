@@ -1,145 +1,162 @@
 # Zombie Game
 
-This repository is a compact Solidity/Foundry rebuild of the original CryptoZombies learning idea.
+This repository is a compact `Solidity/Foundry` rebuild inspired by the original [CryptoZombies.io](https://cryptozombies.io/) idea.
 
-It is not a tutorial port.
+It is **not a tutorial port.**
 
-The goal is to take a tutorial-era game concept and rebuild it as a small modern Solidity project with clearer architecture, better testability, and a more security-minded development process.
+The goal is to take a simple, tutorial-era concept and rebuild it as a minimal, modern Solidity project with:
+- clearer architecture
+- test-driven design
+- explicit security considerations
 
-## Why This Project Exists
+This repository is intentionally small to keep tradeoffs visible.
 
-I use this project as a portfolio-oriented case study for three related skills:
+---
 
-- modernizing legacy/tutorial Solidity into a cleaner MVP
-- designing contracts with testing and review in mind
-- thinking about security as part of implementation, not only after the code is finished
+## Purpose
 
-The repo is intentionally small so the tradeoffs stay visible.
+This project is a **portfolio case study** demonstrating:
+- how to evolve tutorial Solidity into a clean MVP
+- how to design contracts with testing in mind from the start
+- why security testing is fundamentally different from functional testing
+
+A key idea behind this repo → High coverage does not mean high confidence.
+
+---
 
 ## What Was Modernized
 
-Compared with the original tutorial-style architecture, this rebuild makes a few deliberate changes:
-
+Compared to the original tutorial approach:
 - upgraded to Solidity `0.8.24`
-- replaced the inheritance ladder with one compact main contract
-- replaced custom ownership and NFT logic with OpenZeppelin `ERC721` and `Ownable`
-- removed tutorial-era abstractions that added complexity without helping the MVP
-- kept the core game identity while making state transitions easier to test
-- postponed unnecessary integrations and speculative V2 mechanics
+- replaced inheritance-heavy structure with a single focused contract
+- replaced custom logic with OpenZeppelin (`ERC721`, `Ownable`)
+- removed tutorial abstractions that add noise without value
+- simplified state transitions for better testability
+- avoided premature "V2" features
+
+---
 
 ## Design Philosophy
 
-This project follows a few simple rules:
+The project follows strict constraints:
+- readable > clever
+- compact > over-engineered
+- testable > feature-rich
+- explicit tradeoffs > fake production assumptions
 
-- readable over clever
-- compact over over-engineered
-- testable over feature-rich
-- one clear contract over unnecessary modular theater
-- explicit tradeoffs over fake production assumptions
+### Deterministic Combat
 
-For that reason, combat in the current MVP is deterministic.
+Combat is intentionally deterministic.
 
-That is intentional.
+Using insecure randomness (e.g., block data) would make the game look more realistic but introduce misleading assumptions.
 
-Using insecure block-derived pseudo-randomness would make the project look more game-like, but less honest from a security perspective. Deterministic logic is easier to reason about, easier to test, and makes design limitations obvious instead of hiding them behind weak entropy.
+Determinism:
+- improves auditability
+- simplifies reasoning
+- exposes limitations clearly
 
-## Current Architecture
+---
 
-The MVP is centered around one main contract:
+## Architecture
 
+Core contract:
 - `src/ZombieGame.sol`
-  - OpenZeppelin-based ERC721 ownership
+  - ERC721-based ownership
   - one starter zombie per address
-  - zombie stats and progression
-  - cooldown-gated attacks
-  - deterministic battle resolution
-  - rename gated by level
+  - stats and progression
+  - cooldown-based attacks
+  - deterministic combat
+  - level-gated rename
 
-Supporting test files:
-
+Tests:
 - `test/ZombieGame.t.sol`
   - functional tests
-  - authorization and revert-path tests
-  - security-oriented property tests
+  - revert & authorization tests
+  - security-oriented tests
 - `test/ReentrantAttackReceiver.sol`
-  - helper contract for reentrancy testing
+  - helper contract for reentrancy scenarios
+
+---
 
 ## Testing Philosophy
 
-One of the main purposes of this repository is to show that happy-path coverage alone is not enough.
+This repository exists to demonstrate a critical point → **Happy-path coverage can look complete while missing real risk**.
 
-A contract can have strong-looking coverage for its intended flows and still miss important adversarial behavior. In practice, impactful bugs often appear in edge cases, cross-state transitions, callback surfaces, and assumptions that are true only during normal use.
-
-This is why the test suite is split conceptually into:
-
-- functional behavior tests
-- authorization and revert-path tests
+The test suite is structured into:
+- functional tests
+- revert / authorization tests
 - security-oriented tests
 
-An important lesson from this project is that adding security-focused tests may only move the coverage percentage a little, while increasing the actual review value much more.
+Security tests focus on:
+- adversarial flows
+- unexpected state transitions
+- callback surfaces
+- assumption breaking
 
-If you want to include your `forge coverage` screenshots, this is the right place to compare:
+### Coverage vs Reality
 
-- coverage with classic functional tests only
-- coverage after adding security-oriented tests
+You can compare:
+- coverage with only functional tests
+- coverage after adding security tests
 
-The numerical delta may be small.
+The percentage increase may be small.
 
-The assurance value is not.
+The **risk reduction is not**.
 
-## Security Notes
+### Coverage Comparison
+Coverage functional tests
+![coverage-functional-plus-security-tests.png](assets/coverage-functional-plus-security-tests.png)
 
-This repository is security-oriented, but it is still an MVP and not presented as production-ready game infrastructure.
+Coverage functional plus security tests
+![coverage-functional-tests.png](assets/coverage-functional-tests.png)
 
-Current important observations:
+Despite a small delta, the second version significantly increases confidence.
 
-- combat is deterministic and fully previewable
-- starter DNA can be optimized offchain by grinding names
-- the reward mint path uses `_safeMint`, which creates a reentrancy surface during callback-based mint flows
+---
 
-These points are important for two reasons:
+## Security Observations
 
-- they show where simple game logic can still create meaningful attack surface
-- they demonstrate why security testing should not be treated as optional polish after functional tests pass
+This is an MVP and not production-ready.
 
-Some tests in this repository intentionally demonstrate weaknesses rather than proving the system is already safe.
+Important behaviors:
+- deterministic combat → fully predictable outcomes
+- starter DNA can be optimized offchain (name grinding)
+- `_safeMint` introduces a **reentrancy surface via callbacks**
 
-That is deliberate.
+This is intentional:
+- the repo demonstrates *where risks appear*
+- not just how to eliminate them
+
+Some tests **highlight weaknesses**, not prove safety.
+
+---
 
 ## Known Limitations
 
-This repository keeps the MVP small on purpose.
-
-Not included in the current version:
-
-- secure randomness design such as VRF or commit-reveal
-- external DNA integrations
-- production game economy mechanics
+Deliberately excluded:
+- secure randomness (VRF / commit-reveal)
+- external integrations
+- full game economy
 - upgradeability
-- advanced metadata/gameplay modules
+- advanced gameplay modules
 
-These are postponed because they would add complexity faster than they would improve the quality of the core MVP.
+Reason: preserve clarity of the core system.
+
+---
 
 ## Commands
-
-```sh
+```
 forge build
 forge test
 forge coverage
-forge fmt
 ```
-
-If cloning with dependencies as submodules:
-
-```sh
+If cloning with submodules:
+```
 git submodule update --init --recursive
 ```
 
-## Future Work
-
-The most natural next steps are:
-
-- fix the demonstrated reentrancy issue in the reward mint path
-- redesign combat outcome generation if fair randomness becomes a goal
-- add fuzzing and invariants for more adversarial test coverage
-- expand gameplay only if it improves the architecture instead of bloating it
+## What This Repository Demonstrates
+- Why ~100% coverage can still miss vulnerabilities
+- How to design tests beyond happy paths
+- How reentrancy can appear even in simple logic
+- How to think in terms of adversarial flows, not user flows
